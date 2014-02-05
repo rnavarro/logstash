@@ -5,7 +5,6 @@ require "logstash/filters/date"
 require "logstash/inputs/base"
 require "logstash/namespace"
 require "socket"
-require "thread_safe"
 
 # Read syslog messages as events over the network.
 #
@@ -53,6 +52,7 @@ class LogStash::Inputs::Syslog < LogStash::Inputs::Base
 
   public
   def register
+    require "thread_safe"
     @grok_filter = LogStash::Filters::Grok.new(
       "overwrite" => "message",
       "match" => { "message" => "<%{POSINT:priority}>%{SYSLOGLINE}" },
@@ -200,7 +200,7 @@ class LogStash::Inputs::Syslog < LogStash::Inputs::Base
     if event["tags"].nil? || !event["tags"].include?("_grokparsefailure")
       # Per RFC3164, priority = (facility * 8) + severity
       #                       = (facility << 3) & (severity)
-      priority = event["priority"].first.to_i rescue 13
+      priority = event["priority"].to_i rescue 13
       severity = priority & 7   # 7 is 111 (3 bits)
       facility = priority >> 3
       event["priority"] = priority

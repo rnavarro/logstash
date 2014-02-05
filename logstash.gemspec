@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "pry"                #(ruby license)
   gem.add_runtime_dependency "stud"               #(Apache 2.0 license)
   gem.add_runtime_dependency "clamp"              # for command line args/flags (MIT license)
-  gem.add_runtime_dependency "i18n"               #(MIT license)
+  gem.add_runtime_dependency "i18n", [">=0.6.6"]  #(MIT license)
 
   # Web dependencies
   gem.add_runtime_dependency "ftw", ["~> 0.0.39"] #(Apache 2.0 license)
@@ -94,9 +94,9 @@ Gem::Specification.new do |gem|
   end
 
   if RUBY_PLATFORM != 'java'
-    gem.add_runtime_dependency "bunny",       ["~> 1.0.5"]  #(MIT license)
+    gem.add_runtime_dependency "bunny",       ["~> 1.1.0"]  #(MIT license)
   else
-    gem.add_runtime_dependency "march_hare", ["~> 2.0.0"] #(MIT license)
+    gem.add_runtime_dependency "march_hare", ["~> 2.1.0"] #(MIT license)
   end
 
   if RUBY_VERSION >= '1.9.1'

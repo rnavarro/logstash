@@ -108,12 +108,6 @@ class LogStash::Agent < Clamp::Command
       fail("Configuration problem.")
     end
 
-    # Stop now if we are only asking for a config test.
-    if config_test?
-      report "Configuration OK"
-      return
-    end
-
     # Make SIGINT shutdown the pipeline.
     trap_id = Stud::trap("INT") do
       @logger.warn(I18n.t("logstash.agent.interrupted"))
@@ -127,6 +121,12 @@ class LogStash::Agent < Clamp::Command
 
     pipeline.configure("filter-workers", filter_workers)
 
+    # Stop now if we are only asking for a config test.
+    if config_test?
+      report "Configuration OK"
+      return
+    end
+
     @logger.unsubscribe(stdout_logs) if show_startup_errors
 
     # TODO(sissel): Get pipeline completion status.
@@ -135,6 +135,9 @@ class LogStash::Agent < Clamp::Command
   rescue LogStash::ConfigurationError => e
     @logger.unsubscribe(stdout_logs) if show_startup_errors
     report I18n.t("logstash.agent.error", :error => e)
+    if !config_test?
+      report I18n.t("logstash.agent.configtest-flag-information")
+    end
     return 1
   rescue => e
     @logger.unsubscribe(stdout_logs) if show_startup_errors
